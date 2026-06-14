@@ -42,12 +42,12 @@ public class CurrencyManager {
     }
 
     /**
-     * Transfers Gold from sender to receiver. Records transaction history on both.
-     * Returns false if sender has insufficient Gold.
+     * Transfers the given currency from sender to receiver. Records transaction history on both.
+     * Returns false if sender has insufficient funds.
      */
-    public static boolean transfer(ServerPlayer from, ServerPlayer to, long amount) {
-        if (!subtract(from, Currency.GOLD, amount)) return false;
-        add(to, Currency.GOLD, amount);
+    public static boolean transfer(ServerPlayer from, ServerPlayer to, Currency currency, long amount) {
+        if (!subtract(from, currency, amount)) return false;
+        add(to, currency, amount);
         long now = System.currentTimeMillis();
         from.getData(CurrencyAttachments.CURRENCY_DATA.get())
             .recordTransaction(new TransactionEntry(now, to.getName().getString(), amount, true));
