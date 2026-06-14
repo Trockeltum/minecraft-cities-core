@@ -10,7 +10,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 public class PayCommand {
@@ -20,13 +19,33 @@ public class PayCommand {
             .requires(CommandSourceStack::isPlayer)
             .then(Commands.argument("player", EntityArgument.player())
                 .then(Commands.argument("amount", LongArgumentType.longArg(1))
-                    // Admin-only branch: /pay <player> <amount> <type>
+                    // Admin-only branch: /pay <player> <amount> <type> [add|remove]
                     .then(Commands.argument("type", StringArgumentType.word())
                         .requires(src -> src.hasPermission(CoreConfig.ADMIN_PERMISSION_LEVEL.get()))
                         .suggests((ctx, builder) -> {
                             for (Currency c : Currency.values()) builder.suggest(c.name().toLowerCase());
                             return builder.buildFuture();
                         })
+                        // with optional action argument
+                        .then(Commands.argument("action", StringArgumentType.word())
+                            .suggests((ctx, builder) -> {
+                                builder.suggest("add");
+                                builder.suggest("remove");
+                                return builder.buildFuture();
+                            })
+                            .executes(ctx -> {
+                                ServerPlayer target = EntityArgument.getPlayer(ctx, "player");
+                                long amount = LongArgumentType.getLong(ctx, "amount");
+                                Currency currency = parseCurrency(StringArgumentType.getString(ctx, "type"));
+                                if (currency == null) {
+                                    ctx.getSource().sendFailure(Component.translatable("minecraftcitiescore.currency.unknown"));
+                                    return 0;
+                                }
+                                boolean remove = StringArgumentType.getString(ctx, "action").equalsIgnoreCase("remove");
+                                return executeAdminPay(ctx.getSource(), target, currency, amount, remove);
+                            })
+                        )
+                        // without action argument — defaults to add
                         .executes(ctx -> {
                             ServerPlayer target = EntityArgument.getPlayer(ctx, "player");
                             long amount = LongArgumentType.getLong(ctx, "amount");
@@ -35,13 +54,7 @@ public class PayCommand {
                                 ctx.getSource().sendFailure(Component.translatable("minecraftcitiescore.currency.unknown"));
                                 return 0;
                             }
-                            // Admin grant: mint directly, no deduction from sender
-                            CurrencyManager.add(target, currency, amount);
-                            ctx.getSource().sendSuccess(() -> Component.translatable(
-                                    "minecraftcitiescore.currency.give.success", amount, currency.name(), target.getName()), true);
-                            target.sendSystemMessage(Component.translatable(
-                                    "minecraftcitiescore.pay.received", amount, Component.literal("Admin")));
-                            return 1;
+                            return executeAdminPay(ctx.getSource(), target, currency, amount, false);
                         })
                     )
                     // Default branch: /pay <player> <amount>  (Gold, self-pay blocked for non-admins)
@@ -54,6 +67,24 @@ public class PayCommand {
                     })
                 )
             );
+    }
+
+    private static int executeAdminPay(CommandSourceStack src, ServerPlayer target,
+                                       Currency currency, long amount, boolean remove) {
+        if (remove) {
+            CurrencyManager.subtract(target, currency, amount);
+            src.sendSuccess(() -> Component.translatable(
+                    "minecraftcitiescore.currency.take.success", amount, currency.name(), target.getName()), true);
+            target.sendSystemMessage(Component.literal(
+                    "An admin removed " + amount + " " + currency.name() + " from your balance."));
+        } else {
+            CurrencyManager.add(target, currency, amount);
+            src.sendSuccess(() -> Component.translatable(
+                    "minecraftcitiescore.currency.give.success", amount, currency.name(), target.getName()), true);
+            target.sendSystemMessage(Component.translatable(
+                    "minecraftcitiescore.pay.received", amount, Component.literal("Admin")));
+        }
+        return 1;
     }
 
     private static int executePay(CommandSourceStack src, ServerPlayer sender, ServerPlayer target,
