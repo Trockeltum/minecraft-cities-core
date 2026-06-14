@@ -12,5 +12,9 @@
   "minecraftcitiescore.command.currency.given": "Gave %s %s %s",
   "minecraftcitiescore.command.currency.taken": "Took %s %s from %s",
   "minecraftcitiescore.command.currency.set": "Set %s's %s to %s",
-  "minecraftcitiescore.command.currency.check": "%s — Gold: %s | City: %s | Premium: %s"
+  "minecraftcitiescore.command.currency.check": "%s — Gold: %s | City: %s | Premium: %s",
+  "minecraftcitiescore.pay.self": "You cannot pay yourself.",
+  "minecraftcitiescore.pay.insufficient": "You don't have enough Gold.",
+  "minecraftcitiescore.pay.sent": "Sent %s Gold to %s.",
+  "minecraftcitiescore.pay.received": "Received %s Gold from %s."
 }
