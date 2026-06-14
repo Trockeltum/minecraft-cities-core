@@ -1,5 +1,6 @@
 package com.minecraftcities.core;
 
+import com.minecraftcities.core.currency.CurrencyAttachments;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -10,6 +11,6 @@ public class MinecraftCitiesCore {
     public static final String MOD_ID = "minecraftcitiescore";
 
     public MinecraftCitiesCore(IEventBus modBus, ModContainer container) {
-        // Registries and config wired here in later tasks
+        CurrencyAttachments.ATTACHMENT_TYPES.register(modBus);
     }
 }
