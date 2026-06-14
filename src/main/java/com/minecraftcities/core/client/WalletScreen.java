@@ -26,8 +26,8 @@ public class WalletScreen extends Screen {
     private static final int COLOR_GOLD    = 0xFFFFD700;
     private static final int COLOR_CITY    = 0xFF4FC3F7;
     private static final int COLOR_PREMIUM = 0xFFCE93D8;
-    private static final int COLOR_CARD_BG   = 0xCC222233;
-    private static final int COLOR_DETAIL_BG = 0xCC111122;
+    private static final int COLOR_CARD_BG   = 0xFF222233;
+    private static final int COLOR_DETAIL_BG = 0xFF111122;
     private static final int COLOR_TEXT = 0xFFEEEEEE;
     private static final int COLOR_DIM  = 0xFFAAAAAA;
 
@@ -174,7 +174,7 @@ public class WalletScreen extends Screen {
     }
 
     private void drawGoldDetail(GuiGraphics g, int x, int y, int w, PlayerCurrencyData data) {
-        int h = showHistory ? 120 : 80;
+        int h = showHistory ? 145 : 100;
         g.fill(x, y, x + w, y + h, COLOR_DETAIL_BG);
 
         long balance = data != null ? data.get(Currency.GOLD) : 0;
@@ -190,9 +190,9 @@ public class WalletScreen extends Screen {
         }
 
         if (showHistory) {
-            g.drawString(this.font, "-- Recent transactions --", x + 6, y + 44, COLOR_DIM);
+            g.drawString(this.font, "-- Recent transactions --", x + 6, y + 46, COLOR_DIM);
             List<TransactionEntry> entries = data != null ? data.history().entries() : List.of();
-            int lineY = y + 54;
+            int lineY = y + 58;
             int shown = 0;
             for (TransactionEntry e : entries) {
                 if (shown >= 5) break;
