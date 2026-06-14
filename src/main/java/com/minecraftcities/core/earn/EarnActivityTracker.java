@@ -2,16 +2,16 @@ package com.minecraftcities.core.earn;
 
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EarnActivityTracker {
 
-    private static final Map<UUID, Long> blocksMined = new HashMap<>();
-    private static final Map<UUID, Long> mobsKilled = new HashMap<>();
-    private static final Map<UUID, double[]> lastPosition = new HashMap<>();
-    private static final Map<UUID, Double> distanceWalked = new HashMap<>();
+    private static final Map<UUID, Long> blocksMined = new ConcurrentHashMap<>();
+    private static final Map<UUID, Long> mobsKilled = new ConcurrentHashMap<>();
+    private static final Map<UUID, double[]> lastPosition = new ConcurrentHashMap<>();
+    private static final Map<UUID, Double> distanceWalked = new ConcurrentHashMap<>();
 
     public static void onBlockMined(UUID playerId) {
         blocksMined.merge(playerId, 1L, Long::sum);

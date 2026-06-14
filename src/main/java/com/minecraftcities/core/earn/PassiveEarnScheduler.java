@@ -10,6 +10,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
@@ -23,6 +24,7 @@ public class PassiveEarnScheduler {
         if (!CoreConfig.EARN_ENABLED.get()) return;
         tickCounter++;
         long intervalTicks = CoreConfig.EARN_TICK_INTERVAL_SECONDS.get() * 20L;
+        if (intervalTicks <= 0) return;
         if (tickCounter % intervalTicks != 0) return;
 
         for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
@@ -71,5 +73,10 @@ public class PassiveEarnScheduler {
     @SubscribeEvent
     public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         EarnActivityTracker.forget(event.getEntity().getUUID());
+    }
+
+    @SubscribeEvent
+    public static void onServerStarting(ServerStartingEvent event) {
+        tickCounter = 0;
     }
 }
