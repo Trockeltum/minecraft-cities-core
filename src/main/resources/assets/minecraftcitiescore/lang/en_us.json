@@ -16,5 +16,11 @@
   "minecraftcitiescore.pay.self": "You cannot pay yourself.",
   "minecraftcitiescore.pay.insufficient": "You don't have enough Gold.",
   "minecraftcitiescore.pay.sent": "Sent %s Gold to %s.",
-  "minecraftcitiescore.pay.received": "Received %s Gold from %s."
+  "minecraftcitiescore.pay.received": "Received %s Gold from %s.",
+  "minecraftcitiescore.currency.unknown": "Unknown currency.",
+  "minecraftcitiescore.currency.give.success": "Gave %s %s to %s.",
+  "minecraftcitiescore.currency.take.success": "Took %s %s from %s.",
+  "minecraftcitiescore.currency.set.success": "Set %s's %s to %s.",
+  "minecraftcitiescore.currency.check.header": "%s's balances:",
+  "minecraftcitiescore.currency.check.entry": "  %s: %s"
 }

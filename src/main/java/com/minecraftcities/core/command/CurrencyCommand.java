@@ -36,12 +36,12 @@ public class CurrencyCommand {
                             ServerPlayer target = EntityArgument.getPlayer(ctx, "player");
                             Currency currency = parseCurrency(StringArgumentType.getString(ctx, "currency"));
                             if (currency == null) {
-                                ctx.getSource().sendFailure(Component.literal("Unknown currency"));
+                                ctx.getSource().sendFailure(Component.translatable("minecraftcitiescore.currency.unknown"));
                                 return 0;
                             }
                             long amount = LongArgumentType.getLong(ctx, "amount");
                             CurrencyManager.add(target, currency, amount);
-                            ctx.getSource().sendSuccess(() -> Component.literal("Gave " + amount + " " + currency.name() + " to " + target.getName().getString()), true);
+                            ctx.getSource().sendSuccess(() -> Component.translatable("minecraftcitiescore.currency.give.success", amount, currency.name(), target.getName()), true);
                             return 1;
                         })
                     )
@@ -62,12 +62,12 @@ public class CurrencyCommand {
                             ServerPlayer target = EntityArgument.getPlayer(ctx, "player");
                             Currency currency = parseCurrency(StringArgumentType.getString(ctx, "currency"));
                             if (currency == null) {
-                                ctx.getSource().sendFailure(Component.literal("Unknown currency"));
+                                ctx.getSource().sendFailure(Component.translatable("minecraftcitiescore.currency.unknown"));
                                 return 0;
                             }
                             long amount = LongArgumentType.getLong(ctx, "amount");
                             CurrencyManager.subtract(target, currency, amount);
-                            ctx.getSource().sendSuccess(() -> Component.literal("Took " + amount + " " + currency.name() + " from " + target.getName().getString()), true);
+                            ctx.getSource().sendSuccess(() -> Component.translatable("minecraftcitiescore.currency.take.success", amount, currency.name(), target.getName()), true);
                             return 1;
                         })
                     )
@@ -88,12 +88,12 @@ public class CurrencyCommand {
                             ServerPlayer target = EntityArgument.getPlayer(ctx, "player");
                             Currency currency = parseCurrency(StringArgumentType.getString(ctx, "currency"));
                             if (currency == null) {
-                                ctx.getSource().sendFailure(Component.literal("Unknown currency"));
+                                ctx.getSource().sendFailure(Component.translatable("minecraftcitiescore.currency.unknown"));
                                 return 0;
                             }
                             long amount = LongArgumentType.getLong(ctx, "amount");
                             CurrencyManager.set(target, currency, amount);
-                            ctx.getSource().sendSuccess(() -> Component.literal("Set " + target.getName().getString() + "'s " + currency.name() + " to " + amount), true);
+                            ctx.getSource().sendSuccess(() -> Component.translatable("minecraftcitiescore.currency.set.success", target.getName(), currency.name(), amount), true);
                             return 1;
                         })
                     )
@@ -106,11 +106,12 @@ public class CurrencyCommand {
             .then(Commands.argument("player", EntityArgument.player())
                 .executes(ctx -> {
                     ServerPlayer target = EntityArgument.getPlayer(ctx, "player");
-                    StringBuilder sb = new StringBuilder(target.getName().getString()).append("'s balances:\n");
+                    ctx.getSource().sendSuccess(() -> Component.translatable("minecraftcitiescore.currency.check.header", target.getName()), false);
                     for (Currency c : Currency.values()) {
-                        sb.append("  ").append(c.name()).append(": ").append(CurrencyManager.getBalance(target, c)).append("\n");
+                        final Currency fc = c;
+                        final long bal = CurrencyManager.getBalance(target, c);
+                        ctx.getSource().sendSuccess(() -> Component.translatable("minecraftcitiescore.currency.check.entry", fc.name(), bal), false);
                     }
-                    ctx.getSource().sendSuccess(() -> Component.literal(sb.toString()), false);
                     return 1;
                 })
             );
