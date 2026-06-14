@@ -1,0 +1,16 @@
+{
+  "minecraftcitiescore.wallet.title": "Wallet",
+  "minecraftcitiescore.currency.gold": "Gold",
+  "minecraftcitiescore.currency.city": "City Tokens",
+  "minecraftcitiescore.currency.premium": "Premium",
+  "minecraftcitiescore.wallet.earn_rate": "Earn rate: +%s/min",
+  "minecraftcitiescore.wallet.lifetime": "Lifetime earned: %s",
+  "minecraftcitiescore.wallet.next_city_cost": "Next city costs: %s tokens",
+  "minecraftcitiescore.command.pay.success": "Paid %s Gold to %s",
+  "minecraftcitiescore.command.pay.received": "%s paid you %s Gold",
+  "minecraftcitiescore.command.pay.insufficient": "Insufficient Gold",
+  "minecraftcitiescore.command.currency.given": "Gave %s %s %s",
+  "minecraftcitiescore.command.currency.taken": "Took %s %s from %s",
+  "minecraftcitiescore.command.currency.set": "Set %s's %s to %s",
+  "minecraftcitiescore.command.currency.check": "%s — Gold: %s | City: %s | Premium: %s"
+}
