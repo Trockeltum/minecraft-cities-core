@@ -216,6 +216,7 @@ public class WalletScreen extends Screen {
         g.drawString(this.font, "▼ CITY TOKEN DETAILS", x + 6, y + 6, COLOR_CITY);
         g.drawString(this.font, "Balance: " + formatNumber(balance), x + 6, y + 18, COLOR_TEXT);
 
+        // TODO: pass actual cities-founded count once City System is implemented
         long nextCost = CoreConfig.CITY_COST_FORMULA.get()
                 .computeCost(CoreConfig.CITY_COST_BASE.get(), 0);
         g.drawString(this.font, "Next city costs: " + formatNumber(nextCost), x + 6, y + 30, COLOR_DIM);
