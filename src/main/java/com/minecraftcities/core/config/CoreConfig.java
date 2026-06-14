@@ -29,6 +29,10 @@ public class CoreConfig {
     public static final ModConfigSpec.BooleanValue EARN_WALKING_ENABLED;
     public static final ModConfigSpec.LongValue EARN_WALKING_GOLD_PER_100_BLOCKS;
 
+    // Starter pack
+    public static final ModConfigSpec.BooleanValue STARTER_CITY_TOKEN_ENABLED;
+    public static final ModConfigSpec.LongValue STARTER_CITY_TOKEN_AMOUNT;
+
     // Admin permission level
     public static final ModConfigSpec.IntValue ADMIN_PERMISSION_LEVEL;
 
@@ -74,6 +78,13 @@ public class CoreConfig {
 
         builder.pop(); // passive_earn
         builder.pop(); // gold
+
+        builder.push("starter");
+        STARTER_CITY_TOKEN_ENABLED = builder.comment("If true, new players receive City Tokens on first join.")
+            .define("enabled", true);
+        STARTER_CITY_TOKEN_AMOUNT = builder.comment("How many City Tokens new players receive on first join.")
+            .defineInRange("city_token_amount", 1L, 0L, Long.MAX_VALUE);
+        builder.pop();
 
         builder.push("permissions");
         ADMIN_PERMISSION_LEVEL = builder.comment("Vanilla permission level required to use /currency admin commands.")

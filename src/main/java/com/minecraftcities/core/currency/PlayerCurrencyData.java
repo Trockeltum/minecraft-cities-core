@@ -8,7 +8,11 @@ public class PlayerCurrencyData {
     private long gold = 0;
     private long cityTokens = 0;
     private long premiumTokens = 0;
+    private boolean starterGranted = false;
     private final TransactionHistory history = new TransactionHistory();
+
+    public boolean isStarterGranted() { return starterGranted; }
+    public void markStarterGranted()  { starterGranted = true; }
 
     public long get(Currency currency) {
         return switch (currency) {

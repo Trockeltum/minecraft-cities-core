@@ -22,12 +22,14 @@ public class CurrencyAttachments {
         RecordCodecBuilder.create(inst -> inst.group(
             Codec.LONG.fieldOf("gold").forGetter(d -> d.get(Currency.GOLD)),
             Codec.LONG.fieldOf("city").forGetter(d -> d.get(Currency.CITY)),
-            Codec.LONG.fieldOf("premium").forGetter(d -> d.get(Currency.PREMIUM))
-        ).apply(inst, (gold, city, premium) -> {
+            Codec.LONG.fieldOf("premium").forGetter(d -> d.get(Currency.PREMIUM)),
+            Codec.BOOL.optionalFieldOf("starter_granted", false).forGetter(PlayerCurrencyData::isStarterGranted)
+        ).apply(inst, (gold, city, premium, starter) -> {
             PlayerCurrencyData data = new PlayerCurrencyData();
             data.set(Currency.GOLD, gold);
             data.set(Currency.CITY, city);
             data.set(Currency.PREMIUM, premium);
+            if (starter) data.markStarterGranted();
             return data;
         }));
 

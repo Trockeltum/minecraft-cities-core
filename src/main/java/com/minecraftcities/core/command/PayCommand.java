@@ -10,6 +10,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 public class PayCommand {
@@ -27,7 +28,6 @@ public class PayCommand {
                             return builder.buildFuture();
                         })
                         .executes(ctx -> {
-                            ServerPlayer sender = ctx.getSource().getPlayerOrException();
                             ServerPlayer target = EntityArgument.getPlayer(ctx, "player");
                             long amount = LongArgumentType.getLong(ctx, "amount");
                             Currency currency = parseCurrency(StringArgumentType.getString(ctx, "type"));
@@ -35,7 +35,13 @@ public class PayCommand {
                                 ctx.getSource().sendFailure(Component.translatable("minecraftcitiescore.currency.unknown"));
                                 return 0;
                             }
-                            return executePay(ctx.getSource(), sender, target, amount, currency, true);
+                            // Admin grant: mint directly, no deduction from sender
+                            CurrencyManager.add(target, currency, amount);
+                            ctx.getSource().sendSuccess(() -> Component.translatable(
+                                    "minecraftcitiescore.currency.give.success", amount, currency.name(), target.getName()), true);
+                            target.sendSystemMessage(Component.translatable(
+                                    "minecraftcitiescore.pay.received", amount, Component.literal("Admin")));
+                            return 1;
                         })
                     )
                     // Default branch: /pay <player> <amount>  (Gold, self-pay blocked for non-admins)
