@@ -20,6 +20,7 @@ public class CurrencyManager {
         PlayerCurrencyData data = player.getData(CurrencyAttachments.CURRENCY_DATA.get());
         long old = data.get(currency);
         CurrencyOps.add(data, currency, amount);
+        player.setData(CurrencyAttachments.CURRENCY_DATA.get(), data);
         NeoForge.EVENT_BUS.post(new CurrencyChangedEvent(player, currency, old, data.get(currency)));
     }
 
@@ -27,6 +28,7 @@ public class CurrencyManager {
         PlayerCurrencyData data = player.getData(CurrencyAttachments.CURRENCY_DATA.get());
         long old = data.get(currency);
         if (!CurrencyOps.subtract(data, currency, amount)) return false;
+        player.setData(CurrencyAttachments.CURRENCY_DATA.get(), data);
         NeoForge.EVENT_BUS.post(new CurrencyChangedEvent(player, currency, old, data.get(currency)));
         return true;
     }
@@ -35,6 +37,7 @@ public class CurrencyManager {
         PlayerCurrencyData data = player.getData(CurrencyAttachments.CURRENCY_DATA.get());
         long old = data.get(currency);
         CurrencyOps.set(data, currency, value);
+        player.setData(CurrencyAttachments.CURRENCY_DATA.get(), data);
         NeoForge.EVENT_BUS.post(new CurrencyChangedEvent(player, currency, old, value));
     }
 

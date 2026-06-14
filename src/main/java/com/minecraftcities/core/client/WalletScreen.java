@@ -133,17 +133,18 @@ public class WalletScreen extends Screen {
         int cardY = this.height / 2 - 80;
         int detailY = cardY + CARD_HEIGHT + 8;
 
-        // Cards
-        drawCard(graphics, startX,                            cardY, Currency.GOLD,    data, "GOLD",  COLOR_GOLD);
+        // Detail panel drawn first (behind buttons)
+        drawDetailPanel(graphics, detailY, data);
+
+        // Render widgets (buttons provide click areas)
+        super.render(graphics, mouseX, mouseY, partialTick);
+
+        // Cards drawn last so text appears on top of button backgrounds
+        drawCard(graphics, startX,                             cardY, Currency.GOLD,    data, "GOLD",  COLOR_GOLD);
         drawCard(graphics, startX + CARD_WIDTH + CARD_SPACING, cardY, Currency.CITY,    data, "CITY",  COLOR_CITY);
         if (premiumEnabled) {
             drawCard(graphics, startX + 2 * (CARD_WIDTH + CARD_SPACING), cardY, Currency.PREMIUM, data, "PREM.", COLOR_PREMIUM);
         }
-
-        // Detail panel
-        drawDetailPanel(graphics, detailY, data);
-
-        super.render(graphics, mouseX, mouseY, partialTick);
     }
 
     private void drawCard(GuiGraphics g, int x, int y, Currency currency,
