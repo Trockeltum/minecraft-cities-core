@@ -33,17 +33,19 @@ public class CurrencyAttachments {
             return data;
         }));
 
-    // StreamCodec for network sync (client only gets balances, not history)
+    // StreamCodec for network sync (client gets balances + earn rate, not history)
     private static final StreamCodec<ByteBuf, PlayerCurrencyData> CURRENCY_STREAM_CODEC =
         StreamCodec.composite(
             ByteBufCodecs.VAR_LONG, d -> d.get(Currency.GOLD),
             ByteBufCodecs.VAR_LONG, d -> d.get(Currency.CITY),
             ByteBufCodecs.VAR_LONG, d -> d.get(Currency.PREMIUM),
-            (gold, city, premium) -> {
+            ByteBufCodecs.VAR_LONG, PlayerCurrencyData::getEarnRatePerMinute,
+            (gold, city, premium, rate) -> {
                 PlayerCurrencyData data = new PlayerCurrencyData();
                 data.set(Currency.GOLD, gold);
                 data.set(Currency.CITY, city);
                 data.set(Currency.PREMIUM, premium);
+                data.setEarnRatePerMinute(rate);
                 return data;
             });
 

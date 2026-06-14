@@ -3,7 +3,9 @@ package com.minecraftcities.core.earn;
 import com.minecraftcities.core.MinecraftCitiesCore;
 import com.minecraftcities.core.config.CoreConfig;
 import com.minecraftcities.core.currency.Currency;
+import com.minecraftcities.core.currency.CurrencyAttachments;
 import com.minecraftcities.core.currency.CurrencyManager;
+import com.minecraftcities.core.currency.PlayerCurrencyData;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -45,7 +47,14 @@ public class PassiveEarnScheduler {
 
             if (goldEarned > 0) {
                 CurrencyManager.add(player, Currency.GOLD, goldEarned);
+                EarnActivityTracker.recordEarn(player.getUUID(), goldEarned);
             }
+
+            // Update synced earn rate regardless (rate decays as old entries age out)
+            long rate = EarnActivityTracker.computeRatePerMinute(player.getUUID());
+            PlayerCurrencyData data = player.getData(CurrencyAttachments.CURRENCY_DATA.get());
+            data.setEarnRatePerMinute(rate);
+            player.setData(CurrencyAttachments.CURRENCY_DATA.get(), data);
         }
     }
 

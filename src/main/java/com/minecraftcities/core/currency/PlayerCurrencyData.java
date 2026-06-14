@@ -9,10 +9,13 @@ public class PlayerCurrencyData {
     private long cityTokens = 0;
     private long premiumTokens = 0;
     private boolean starterGranted = false;
+    private long earnRatePerMinute = 0;
     private final TransactionHistory history = new TransactionHistory();
 
-    public boolean isStarterGranted() { return starterGranted; }
-    public void markStarterGranted()  { starterGranted = true; }
+    public boolean isStarterGranted()              { return starterGranted; }
+    public void markStarterGranted()               { starterGranted = true; }
+    public long getEarnRatePerMinute()             { return earnRatePerMinute; }
+    public void setEarnRatePerMinute(long rate)    { earnRatePerMinute = Math.max(0, rate); }
 
     public long get(Currency currency) {
         return switch (currency) {

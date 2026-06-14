@@ -142,10 +142,8 @@ public class WalletScreen extends Screen {
         g.drawString(this.font, "Balance: " + formatNumber(balance), x + 6, y + 18, COLOR_TEXT);
 
         if (CoreConfig.EARN_ENABLED.get()) {
-            long rate = 0;
-            if (CoreConfig.EARN_MINING_ENABLED.get())   rate += CoreConfig.EARN_MINING_GOLD_PER_BLOCK.get();
-            if (CoreConfig.EARN_MOB_KILL_ENABLED.get()) rate += CoreConfig.EARN_MOB_KILL_GOLD_PER_KILL.get();
-            g.drawString(this.font, "Earn: +" + rate + "/activity", x + 6, y + 30, COLOR_DIM);
+            long rate = data != null ? data.getEarnRatePerMinute() : 0;
+            g.drawString(this.font, "Earn: +" + rate + "/min (1h avg)", x + 6, y + 30, COLOR_DIM);
         }
 
         if (showHistory) {

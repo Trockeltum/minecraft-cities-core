@@ -2,6 +2,8 @@ package com.minecraftcities.core.earn;
 
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,6 +14,27 @@ public class EarnActivityTracker {
     private static final Map<UUID, Long> mobsKilled = new ConcurrentHashMap<>();
     private static final Map<UUID, double[]> lastPosition = new ConcurrentHashMap<>();
     private static final Map<UUID, Double> distanceWalked = new ConcurrentHashMap<>();
+
+    // Rolling earn history: each entry is [timestampMs, goldEarned]
+    private static final Map<UUID, Deque<long[]>> earnHistory = new ConcurrentHashMap<>();
+    private static final long ONE_HOUR_MS = 60 * 60 * 1000L;
+
+    public static void recordEarn(UUID playerId, long goldEarned) {
+        earnHistory.computeIfAbsent(playerId, k -> new ArrayDeque<>())
+                .addLast(new long[]{System.currentTimeMillis(), goldEarned});
+    }
+
+    /** Returns the rolling average gold earned per minute over the last 60 minutes. */
+    public static long computeRatePerMinute(UUID playerId) {
+        Deque<long[]> history = earnHistory.get(playerId);
+        if (history == null || history.isEmpty()) return 0;
+        long cutoff = System.currentTimeMillis() - ONE_HOUR_MS;
+        history.removeIf(e -> e[0] < cutoff);
+        if (history.isEmpty()) return 0;
+        long total = 0;
+        for (long[] e : history) total += e[1];
+        return total / 60;
+    }
 
     public static void onBlockMined(UUID playerId) {
         blocksMined.merge(playerId, 1L, Long::sum);
@@ -54,5 +77,6 @@ public class EarnActivityTracker {
         mobsKilled.remove(playerId);
         lastPosition.remove(playerId);
         distanceWalked.remove(playerId);
+        earnHistory.remove(playerId);
     }
 }
